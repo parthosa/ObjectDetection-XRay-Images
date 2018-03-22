@@ -1,0 +1,6 @@
+# floyd run --gpu --tensorboard --data parthosa/datasets/xray-data/1:/data  --data parthosa/datasets/pretrained/1:/pretrained --env tensorflow "python tflearn_alex.py"
+# floyd run --gpu --tensorboard --data parthosa/datasets/xray-data/1:/data --data parthosa2/datasets/weights/1:/weights --env theano "python transfer_learn.py"
+# floyd run --gpu --tensorboard --data parthosa/datasets/xray-data/1:/data --env tensorflow "python transfer_learn.py"
+floyd run --cpu --tensorboard --data parthosa2/projects/x-ray-keras/114/output:/model --env tensorflow "python test.py"
+# floyd run --cpu --data parthosa/datasets/xray-data/1:/data --env pytorch "python torch_p.py"
+# floyd run --gpu --tensorboard --data parthosa2/projects/x-ray-keras/48/output:/model1  --data parthosa/datasets/pretrained/1:/pretrained --env tensorflow "python tflearn_alex.py"
