@@ -1,7 +1,7 @@
 ## Weights
 
 * Dataset: https://www.floydhub.com/parthosa/datasets/xray-data/
-* Tflearn weights: https://www.floydhub.com/parthosa/datasets/pretrained/
+* Tflearn weights: https://www.floydhub.com/parthosa2/datasets/weights
 * Keras weights: https://www.floydhub.com/parthosa2/datasets/weights/
 
 ## Run
