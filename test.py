@@ -11,16 +11,16 @@ def sq_norm(mat):
     mat_sq_norm = normM
     return mat_sq_norm
 
-x = loadmat('../matlab-outputs/knn/with-others/trainFeaturesData.mat')
-y = loadmat('../matlab-outputs/knn/with-others/k-3/testFeaturesData.mat')
+# x = loadmat('../matlab-outputs/knn/with-others/trainFeaturesData.mat')
+# y = loadmat('../matlab-outputs/knn/with-others/k-3/testFeaturesData.mat')
 # y = np.load('../pred.npy')
 # z = np.load('./pred (1).npy')
 
-train_features = x['trainingFeaturesNorm']
+# train_features = x['trainingFeaturesNorm']
 # train_features_norm_mat = x['trainingFeaturesNorm']
 # train_features = np.load('../test_features.npy')
 
-test_features = y['testFeaturesNorm']
+# test_features = y['testFeaturesNorm']
 # print y
 # print('Matlab')
 # print(train_features_mat)
@@ -40,23 +40,28 @@ test_features = y['testFeaturesNorm']
 # # x = np.array([[1,4,2],[4,9,6]])
 # # print sq_norm(x)
 
-# train_features = sq_norm(np.load('../train_features.npy'))
-train_labels = np.load('../train_labels.npy')
-# test_features = sq_norm(np.load('./test_features.npy'))
-test_labels = np.load('../test_labels.npy')
+train_features = sq_norm(np.load('/model/train_features.npy'))
+train_labels = np.load('/model/train_labels.npy')
+test_features = sq_norm(np.load('/model/test_features.npy'))
+test_labels = np.load('/model/test_labels.npy')
 target_names = ['blade','gun','others','shuriken']
-print(train_features[0])
+# train_features = train_features.
+print(train_features.shape)
+print(test_features.shape)
+print(train_labels.shape)
+print(test_labels.shape)
+
 try:
     svm = LinearSVC(random_state=0)
     svm.fit(train_features, train_labels)
 
     pred = svm.predict(test_features)
-    np.save('../output/pred_svm',pred)
+    np.save('/output/pred_svm',pred)
     # pred = np.load('/model2/pred.npy')
     print('SVM')
     print(accuracy_score(test_labels, pred))
     print(classification_report(test_labels, pred,target_names=target_names))
-    for i in range(1,9,2):
+    for i in range(1,30,2):
         print("k=%d" %(i))
         knn = KNeighborsClassifier(n_neighbors=i)
         # print('train',train_features.shape,train_labels.shape)
@@ -66,7 +71,7 @@ try:
 
         # test_features = test_features.reshape(test_features.shape[0],-1)
         pred = knn.predict(test_features)
-        np.save('../output/pred_%d' %(i),pred)
+        np.save('/output/pred_%d' %(i),pred)
         # pred = np.load('/model2/pred.npy')
         print(accuracy_score(test_labels, pred))
         print(classification_report(test_labels, pred,target_names=target_names))
