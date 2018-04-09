@@ -1,16 +1,17 @@
 from keras.applications.mobilenet import MobileNet
 from keras.initializers import VarianceScaling
 from keras.models import Model
-from keras.callbacks import CSVLogger
+from keras.callbacks import CSVLogger, TensorBoard
 from keras.preprocessing import image
 from keras.preprocessing.image import ImageDataGenerator
 from keras.optimizers import SGD, RMSprop, Adam
+from keras.initializers import VarianceScaling
 
 #####load data#####
 img_width, img_height = 224, 224
 train_data_dir =  "/data/train"
 test_data_dir =  "/data/test"
-batch_size = 16
+batch_size = 64
 
 train_datagen = ImageDataGenerator(
 # rescale = 1./255,
@@ -55,20 +56,21 @@ test_labels = test_generator.classes
 model = MobileNet(weights=None, classes=4)
 
 #####Compile model#####
-sgd = SGD(lr=0.000001, decay=1e-6, momentum=1.9)
+sgd = SGD(lr=0.0001, decay=1e-6, momentum=0.9, nesterov=True)
 rms = RMSprop()
 # mse = losses.mean_squared_error
-adam = Adam(lr=0.001)
+adam = Adam(lr=0.0001)
 
 model.compile(loss='categorical_crossentropy', optimizer=adam, metrics=['accuracy'])
 
 # Fit the model
 # f = open("output/log.csv","w+")
-csv_logger = CSVLogger('/output/log.csv', append=True, separator=',')
+# csv_logger = CSVLogger('/output/log.csv', append=True, separator=',')
+tb_callback = TensorBoard(log_dir='/output/logs', histogram_freq=0, batch_size=batch_size)
 # model.fit(train_features, train_labels, epochs=128, batch_size=batch_size,  verbose=2, callbacks=[csv_logger])
-model.fit_generator(train_generator, epochs=50, steps_per_epoch = (900/batch_size)+1, verbose=2, callbacks=[csv_logger])
-model.save_weights("/output/mobnet.h5")
-score,acc = model.evaluate_generator(test_generator, steps = (1050/batch_size)+1)
+model.fit_generator(train_generator, epochs=150, steps_per_epoch = (1400/batch_size)+1, verbose=2, callbacks=[tb_callback], shuffle=True, validation_split=0.1)
+model.save("/output/mobnet.h5")
+score,acc = model.evaluate_generator(test_generator, steps = (550/batch_size)+1)
 # calculate predictions
 # pred = model.predict(test_features)
 # print(test_labels.shape,pred.shape)
