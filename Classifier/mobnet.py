@@ -5,7 +5,6 @@ from keras.callbacks import CSVLogger, TensorBoard
 from keras.preprocessing import image
 from keras.preprocessing.image import ImageDataGenerator
 from keras.optimizers import SGD, RMSprop, Adam
-from keras.initializers import VarianceScaling
 
 #####load data#####
 img_width, img_height = 224, 224
@@ -32,12 +31,12 @@ class_mode = "categorical")
 
 test_datagen = ImageDataGenerator(
 # rescale = 1./255,
-horizontal_flip = True,
+horizontal_flip = False,
 fill_mode = "nearest",
-zoom_range = 0.3,
-width_shift_range = 0.3,
-height_shift_range=0.3,
-rotation_range=180)
+zoom_range = 0.0,
+width_shift_range = 0.0,
+height_shift_range=0.0,
+rotation_range=0)
 
 
 test_generator = test_datagen.flow_from_directory(
@@ -56,10 +55,10 @@ test_labels = test_generator.classes
 model = MobileNet(weights=None, classes=4)
 
 #####Compile model#####
-sgd = SGD(lr=0.0001, decay=1e-6, momentum=0.9, nesterov=True)
+sgd = SGD(lr=0.000001, decay=1e-6, momentum=1.9)
 rms = RMSprop()
 # mse = losses.mean_squared_error
-adam = Adam(lr=0.0001)
+adam = Adam(lr=0.001)
 
 model.compile(loss='categorical_crossentropy', optimizer=adam, metrics=['accuracy'])
 
@@ -68,7 +67,7 @@ model.compile(loss='categorical_crossentropy', optimizer=adam, metrics=['accurac
 # csv_logger = CSVLogger('/output/log.csv', append=True, separator=',')
 tb_callback = TensorBoard(log_dir='/output/logs', histogram_freq=0, batch_size=batch_size)
 # model.fit(train_features, train_labels, epochs=128, batch_size=batch_size,  verbose=2, callbacks=[csv_logger])
-model.fit_generator(train_generator, epochs=150, steps_per_epoch = (1400/batch_size)+1, verbose=2, callbacks=[tb_callback], shuffle=True, validation_split=0.1)
+model.fit_generator(train_generator, epochs=150, steps_per_epoch = (1400/batch_size)+1, verbose=2, callbacks=[tb_callback])
 model.save("/output/mobnet.h5")
 score,acc = model.evaluate_generator(test_generator, steps = (550/batch_size)+1)
 # calculate predictions
