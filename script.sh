@@ -1,0 +1,1 @@
+floyd run --gpu --tensorboard  --data varunagarwal213/datasets/complete-data/2:/data --env tensorflow:py2 "python train_frcnn.py -p datafile -o simple"
